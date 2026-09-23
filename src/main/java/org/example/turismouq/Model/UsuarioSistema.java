@@ -29,7 +29,6 @@ public class UsuarioSistema {
     @Column(name = "cedula", nullable = false, length = 30, unique = true)
     private String cedula;
 
-    // Guarda aquí la contraseña encriptada (BCrypt), no en texto plano
     @Column(name = "contrasena", nullable = false, length = 255)
     private String contrasena;
 }
