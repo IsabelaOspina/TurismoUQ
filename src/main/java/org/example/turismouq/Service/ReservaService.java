@@ -20,16 +20,16 @@ public class ReservaService {
                     idCliente, idHabitacion, fechaIn, fechaOut, numeroPersonas
             );
         } catch (Exception e) {
-            // Extraer el mensaje de ORA-20100, ORA-20101, ORA-20102, etc.
-            String mensaje = e.getMessage();
-            if (mensaje != null && mensaje.contains("ORA-")) {
-                throw new RuntimeException(mensaje.substring(mensaje.indexOf("ORA-")));
-            }
-            throw new RuntimeException("Error al crear reserva: " + mensaje);
+            // Deja solo "ORA-20100: ...", "ORA-20101: ...", "ORA-20102: ...", etc.
+            throw new RuntimeException(ErrorOracle.mensaje(e));
         }
     }
 
     public BigDecimal calcularValor(Long idHabitacion, Date fechaIn, Date fechaOut) {
-        return reservaProcedureRepository.calcularValorEstadia(idHabitacion, fechaIn, fechaOut);
+        try {
+            return reservaProcedureRepository.calcularValorEstadia(idHabitacion, fechaIn, fechaOut);
+        } catch (Exception e) {
+            throw new RuntimeException(ErrorOracle.mensaje(e));
+        }
     }
 }
