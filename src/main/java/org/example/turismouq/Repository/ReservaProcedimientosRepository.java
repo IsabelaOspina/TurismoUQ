@@ -47,19 +47,14 @@ public class ReservaProcedimientosRepository {
      * Llama a PKG_TURISMO_UQ.fn_valor_estadia
      */
     public BigDecimal calcularValorEstadia(Long idHabitacion, Date fechaIn, Date fechaOut) {
-        StoredProcedureQuery query = em.createStoredProcedureQuery("PKG_TURISMO_UQ.fn_valor_estadia");
+        // Una función de PL/SQL se invoca desde un SELECT
+        Object valor = em.createNativeQuery(
+                        "SELECT PKG_TURISMO_UQ.fn_valor_estadia(:idHabitacion, :fechaIn, :fechaOut) FROM DUAL")
+                .setParameter("idHabitacion", idHabitacion)
+                .setParameter("fechaIn", fechaIn)
+                .setParameter("fechaOut", fechaOut)
+                .getSingleResult();
 
-        query.registerStoredProcedureParameter("p_id_habitacion", Long.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_fecha_in", Date.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("p_fecha_out", Date.class, ParameterMode.IN);
-        query.registerStoredProcedureParameter("return", BigDecimal.class, ParameterMode.OUT);
-
-        query.setParameter("p_id_habitacion", idHabitacion);
-        query.setParameter("p_fecha_in", fechaIn);
-        query.setParameter("p_fecha_out", fechaOut);
-
-        query.execute();
-
-        return (BigDecimal) query.getOutputParameterValue("return");
+        return new BigDecimal(valor.toString());
     }
 }
