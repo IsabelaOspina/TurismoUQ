@@ -17,6 +17,7 @@ public class LiquidacionRepository {
 
     /** Ejecuta PKG_TURISMO_UQ.sp_liquidacion_mensual */
     public void generar(int anio, int mes) {
+        // Nota: el procedimiento ya hace COMMIT internamente, por eso no usamos @Transactional aquí.
         jdbc.update("BEGIN PKG_TURISMO_UQ.sp_liquidacion_mensual(?, ?); END;", anio, mes);
     }
 
@@ -25,6 +26,7 @@ public class LiquidacionRepository {
         return jdbc.queryForList("""
                 SELECT a.nombre          AS "alojamiento",
                        m.nombre          AS "municipio",
+                       NVL(l.temporada, 'N/A') AS "temporada", -- 👈 NUEVA COLUMNA
                        l.total_reservas  AS "totalReservas",
                        l.ingresos        AS "ingresos",
                        l.pagado          AS "pagado",

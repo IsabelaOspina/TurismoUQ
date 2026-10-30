@@ -81,7 +81,7 @@ public interface ReporteRepository extends JpaRepository<Reserva, Long> {
         JOIN ALOJAMIENTO a ON ra.id_alojamiento = a.id_alojamiento
         JOIN MUNICIPIO m ON a.id_municipio = m.id_municipio
         JOIN TIPO_ALOJAMIENTO t ON a.id_tipo_alojamiento = t.id_tipo_alojamiento
-        LEFT JOIN TEMPORADA temp ON r.fecha_entrada BETWEEN temp.fecha_inicio AND temp.fecha_fin
+        LEFT JOIN TEMPORADA temp ON EXTRACT(MONTH FROM r.fecha_entrada) = temp.mes
         WHERE r.estado IN ('CONFIRMADA', 'FINALIZADA')
         GROUP BY ROLLUP(m.nombre, t.nombre, temp.tipo)
         ORDER BY municipio, tipoAlojamiento, temporada
