@@ -16,11 +16,10 @@ public class Temporada {
     @Column(name = "id_temporada")
     private Long id;
 
-    @Column(name = "nombre", nullable = false, length = 50, unique = true)
+    @Column(name = "nombre", nullable = false, length = 50)
     private String nombre;
 
-    // 👇 NUEVO CAMPO (reemplaza a fechaInicio y fechaFin)
-    @Column(name = "mes", nullable = false)
+    @Column(name = "mes", nullable = false, unique = true)
     private Integer mes;
 
     @Enumerated(EnumType.STRING)

@@ -26,7 +26,7 @@ public class LiquidacionRepository {
         return jdbc.queryForList("""
                 SELECT a.nombre          AS "alojamiento",
                        m.nombre          AS "municipio",
-                       NVL(l.temporada, 'N/A') AS "temporada", -- 👈 NUEVA COLUMNA
+                       NVL(l.temporada, 'N/A') AS "temporada", 
                        l.total_reservas  AS "totalReservas",
                        l.ingresos        AS "ingresos",
                        l.pagado          AS "pagado",
@@ -38,5 +38,29 @@ public class LiquidacionRepository {
                  WHERE l.anio = ? AND l.mes = ?
                  ORDER BY l.ingresos DESC
                 """, anio, mes);
+    }
+
+    /** Ejecuta PKG_TURISMO_UQ.sp_liquidacion_temporada (todo el año, agrupado por temporada). */
+    public void generarTemporada(int anio) {
+        jdbc.update("BEGIN PKG_TURISMO_UQ.sp_liquidacion_temporada(?); END;", anio);
+    }
+
+    /** Lee lo que el procedimiento guardó en LIQUIDACION_TEMPORADA para ese año. */
+    public List<Map<String, Object>> consultarTemporada(int anio) {
+        return jdbc.queryForList("""
+                SELECT a.nombre          AS "alojamiento",
+                       m.nombre          AS "municipio",
+                       l.temporada       AS "temporada",
+                       l.total_reservas  AS "totalReservas",
+                       l.ingresos        AS "ingresos",
+                       l.pagado          AS "pagado",
+                       l.saldo_pendiente AS "saldoPendiente",
+                       l.fecha_proceso   AS "fechaProceso"
+                  FROM LIQUIDACION_TEMPORADA l
+                  JOIN ALOJAMIENTO a ON a.id_alojamiento = l.id_alojamiento
+                  JOIN MUNICIPIO m   ON m.id_municipio   = a.id_municipio
+                 WHERE l.anio = ?
+                 ORDER BY DECODE(l.temporada, 'ALTA', 1, 'MEDIA', 2, 'BAJA', 3), l.ingresos DESC
+                """, anio);
     }
 }

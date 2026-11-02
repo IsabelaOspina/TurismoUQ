@@ -28,4 +28,18 @@ public class LiquidacionService {
     public List<Map<String, Object>> consultar(int anio, int mes) {
         return liquidacionRepository.consultar(anio, mes);
     }
+
+    /** Corre la liquidación por temporada del año y devuelve el resultado guardado. */
+    public List<Map<String, Object>> generarTemporada(int anio) {
+        try {
+            liquidacionRepository.generarTemporada(anio);
+        } catch (Exception e) {
+            throw new RuntimeException(ErrorOracle.mensaje(e));
+        }
+        return liquidacionRepository.consultarTemporada(anio);
+    }
+
+    public List<Map<String, Object>> consultarTemporada(int anio) {
+        return liquidacionRepository.consultarTemporada(anio);
+    }
 }

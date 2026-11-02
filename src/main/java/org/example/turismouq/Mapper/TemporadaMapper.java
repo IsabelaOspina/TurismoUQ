@@ -13,8 +13,7 @@ public class TemporadaMapper {
         return new TemporadaDTO(
                 entity.getId(),
                 entity.getNombre(),
-                entity.getFechaInicio(),
-                entity.getFechaFin(),
+                entity.getMes(),
                 entity.getTipo()
         );
     }
@@ -25,11 +24,9 @@ public class TemporadaMapper {
         Temporada entity = new Temporada();
         entity.setId(dto.getId());
         entity.setNombre(dto.getNombre());
-        entity.setFechaInicio(dto.getFechaInicio());
-        entity.setFechaFin(dto.getFechaFin());
+        entity.setMes(dto.getMes());
         entity.setTipo(dto.getTipo());
 
         return entity;
     }
 }
-

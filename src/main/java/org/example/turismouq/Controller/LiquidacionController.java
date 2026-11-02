@@ -29,4 +29,19 @@ public class LiquidacionController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/temporada")
+    public ResponseEntity<?> consultarTemporada(@RequestParam int anio) {
+        return ResponseEntity.ok(liquidacionService.consultarTemporada(anio));
+    }
+
+    // POST /api/liquidacion/temporada/generar?anio=2025  -> ejecuta sp_liquidacion_temporada
+    @PostMapping("/temporada/generar")
+    public ResponseEntity<?> generarTemporada(@RequestParam int anio) {
+        try {
+            return ResponseEntity.ok(liquidacionService.generarTemporada(anio));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

@@ -1,4 +1,3 @@
-
 package org.example.turismouq.Controller;
 
 import org.example.turismouq.DTO.EditarReservaDTO;
@@ -68,6 +67,17 @@ public class ReservaController {
                     Map.of("error", e.getMessage())
             );
         }
+    }
+
+    // Consultar una reserva por su número
+    // GET /api/reservas/25013
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarReserva(@PathVariable Long id) {
+        return reservaService.buscarReserva(id)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(404).body(
+                        Map.of("error", "No existe la reserva N.º " + id + ".")
+                ));
     }
 
     // Calcular el valor de una estadía
